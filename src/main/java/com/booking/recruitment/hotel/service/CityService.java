@@ -10,4 +10,5 @@ public interface CityService {
   City getCityById(Long id);
 
   City createCity(City city);
+
 }
