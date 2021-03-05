@@ -62,25 +62,39 @@ class DefaultHotelService implements HotelService {
        hotelRepository.save(hotel.get());
   }
 
+//  @Override
+//  public List<Hotel> findClosestHotels(Double lat, Double lon) {
+//
+//      List<Hotel> result = new ArrayList<>();
+//
+//      Map<Long,Double> distanceMap = new HashMap<>();
+//
+//      List<Hotel> hotels = hotelRepository.findAll();
+//      for(Hotel hotel:hotels) {
+//        Double distance = DistanceUtil.calculateDistance(lat,lon,hotel.getLatitude(),hotel.getLongitude());
+//        distanceMap.put(hotel.getId(),distance);
+//      }
+//
+//      Map<Long,Double> sortedHotels = DistanceUtil.sortByValue(distanceMap);
+//      int i=1;
+//      for(Map.Entry<Long,Double> item: sortedHotels.entrySet()) {
+//            result.add(hotelRepository.findById(item.getKey()).get()) ;
+//            i++;
+//            if(i==3)
+//              break;
+//      }
+//      return result;
+//  }
+
   @Override
   public List<Hotel> findClosestHotels(Double lat, Double lon) {
-
-      List<Hotel> result = new ArrayList<>();
-
-      Map<Long,Double> distanceMap = new HashMap<>();
-      List<Hotel> hotels = hotelRepository.findAll();
-      for(Hotel hotel:hotels) {
-        Double distance = DistanceUtil.calculateDistance(lat,lon,hotel.getLatitude(),hotel.getLongitude());
-        distanceMap.put(hotel.getId(),distance);
+    List<Hotel> hotels = hotelRepository.findAll();
+    Collections.sort(hotels, new Comparator<Hotel>() {
+      @Override
+      public int compare(Hotel o1, Hotel o2) {
+        return  DistanceUtil.calculateDistance(lat,lon,o1.getLatitude(),o1.getLongitude()).compareTo(DistanceUtil.calculateDistance(lat,lon,o2.getLatitude(),o2.getLongitude()));
       }
-
-      Map<Long,Double> sortedHotels = DistanceUtil.sortByValue(distanceMap);
-      int i=1;
-      for(Map.Entry<Long,Double> item: sortedHotels.entrySet()) {
-            result.add(hotelRepository.findById(item.getKey()).get()) ;
-            if(i==3)
-              break;
-      }
-      return result;
+    });
+    return hotels.subList(0,2);
   }
 }

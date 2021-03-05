@@ -31,7 +31,7 @@ public  class DistanceUtil {
 
         return wordCounts.entrySet()
                 .stream()
-                .sorted((Map.Entry.<Long, Double>comparingByValue().reversed()))
+                .sorted((Map.Entry.<Long, Double>comparingByValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 }
